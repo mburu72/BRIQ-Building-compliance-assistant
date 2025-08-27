@@ -91,6 +91,7 @@ BRIQ/
 
 ---
 ## The live demo can be found [here](https://briq-ke.netlify.app)
+## Swagger docs can be found [here](https://briq.duckdns.org/docs)
 
 
 ## 🗂️ Regulatory Documents
