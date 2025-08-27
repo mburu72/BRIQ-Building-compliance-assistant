@@ -21,7 +21,7 @@ export async function askQuestion(question) {
   }
   const data = await res.json();
 
-  // Return the whole structured response
+ 
   return data;
 }
 

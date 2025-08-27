@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Send, MessageCircle } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Send, MessageCircle } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { askQuestion, fetchHistory } from "./api/api";
 import Sidebar from "./components/sidebar";
 
@@ -19,14 +19,17 @@ export default function MinimalChat() {
     fetchHistory()
       .then((hist) => {
         setMessages(hist);
-        setChats(hist); 
+        setChats(hist);
       })
       .catch((err) => console.error("⚠️ history fetch failed:", err));
   }, []);
-  const cleanMarkdownText = (text) => {
 
-    return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1');
+  const handleNewChat = () => {
+    setMessages([]); 
+    setChatMessage(""); 
+    setError(""); 
   };
+
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
 
@@ -46,7 +49,7 @@ export default function MinimalChat() {
       const botMessage = {
         id: uuidv4(),
         type: "bot",
-        data: answerData, // store structured response
+        data: answerData,
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -58,16 +61,15 @@ export default function MinimalChat() {
     }
   };
 
-  
   const handleSelectChat = (chat) => {
     let parsedAnswer;
-  
+
     try {
-      parsedAnswer = JSON.parse(chat.answer); // structured messages
+      parsedAnswer = JSON.parse(chat.answer);
     } catch {
-      parsedAnswer = { answer: chat.answer }; // plain string messages
+      parsedAnswer = { answer: chat.answer };
     }
-  
+
     setMessages([
       { id: uuidv4(), type: "user", text: chat.question },
       { id: uuidv4(), type: "bot", data: parsedAnswer },
@@ -75,7 +77,7 @@ export default function MinimalChat() {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -83,15 +85,14 @@ export default function MinimalChat() {
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-white">
-      {/* Sidebar */}
       <Sidebar
         chats={chats}
         onSelectChat={handleSelectChat}
+        onNewChat={handleNewChat}
         isOpen={sidebarOpen}
         toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
       />
 
-      {/* Mobile open button */}
       <button
         onClick={() => setSidebarOpen(true)}
         className="fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-lg shadow sm:hidden"
@@ -99,18 +100,20 @@ export default function MinimalChat() {
         ☰
       </button>
 
-      {/* Main Chat Area */}
       <div className="flex-1 relative">
         <div className="max-w-4xl mx-auto pt-10 pb-36 px-4">
           {messages.length === 0 && !loading && !error && (
             <div className="text-center text-gray-400 py-16">
               <MessageCircle size={48} className="mx-auto mb-4" />
-              <p className="text-lg mb-2">Ready to help with your compliance questions</p>
-              <p className="text-sm">Start a conversation by asking a question below.</p>
+              <p className="text-lg mb-2">
+                Ready to help with your compliance questions
+              </p>
+              <p className="text-sm">
+                Start a conversation by asking a question below.
+              </p>
             </div>
           )}
 
-          {/* Messages */}
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -122,7 +125,9 @@ export default function MinimalChat() {
             >
               {msg.type === "bot" && msg.data ? (
                 <div className="space-y-2">
-                  <div>{msg.data.answer}</div>
+                  <div>
+                    <ReactMarkdown>{msg.data.answer}</ReactMarkdown>
+                  </div>
 
                   {msg.data.references?.length > 0 && (
                     <div>
@@ -154,25 +159,13 @@ export default function MinimalChat() {
 
                   {msg.data.confidence !== undefined && (
                     <div>
-                      <strong>Confidence:</strong> {(msg.data.confidence * 100).toFixed(0)}%
+                      <strong>Confidence:</strong>{" "}
+                      {(msg.data.confidence * 100).toFixed(0)}%
                     </div>
                   )}
                 </div>
               ) : msg.type === "bot" ? (
-                <ReactMarkdown
-                  components={{
-                    a: ({ node, ...props }) => (
-                      <a
-                        {...props}
-                        className="text-red-400 underline hover:text-red-300 break-words"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      />
-                    ),
-                  }}
-                >
-                 {cleanMarkdownText(msg.data.answer)}
-                </ReactMarkdown>
+                <ReactMarkdown>{msg.data.answer}</ReactMarkdown>
               ) : (
                 <p className="whitespace-pre-wrap">{msg.text}</p>
               )}
@@ -180,12 +173,13 @@ export default function MinimalChat() {
           ))}
 
           {loading && (
-            <div className="text-gray-400 text-sm py-4 animate-pulse">BRIQ is thinking…</div>
+            <div className="text-gray-400 text-sm py-4 animate-pulse">
+              BRIQ is thinking…
+            </div>
           )}
           {error && <div className="text-red-400 text-sm py-4">{error}</div>}
         </div>
 
-        {/* Input Box */}
         <div className="fixed bottom-6 left-4 right-4 sm:left-72 sm:right-6 max-w-4xl mx-auto">
           <div className="bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-4 shadow-2xl">
             <div className="relative">
@@ -199,7 +193,8 @@ export default function MinimalChat() {
                 style={{ height: "auto", minHeight: "48px" }}
                 onInput={(e) => {
                   e.target.style.height = "auto";
-                  e.target.style.height = Math.min(e.target.scrollHeight, 128) + "px";
+                  e.target.style.height =
+                    Math.min(e.target.scrollHeight, 128) + "px";
                 }}
               />
               <button
