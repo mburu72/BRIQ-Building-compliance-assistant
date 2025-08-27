@@ -168,7 +168,7 @@ export default function MinimalChat() {
                     ),
                   }}
                 >
-                  {msg.text}
+                  {msg.data.answer}
                 </ReactMarkdown>
               ) : (
                 <p className="whitespace-pre-wrap">{msg.text}</p>
