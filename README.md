@@ -90,7 +90,7 @@ BRIQ/
 ```
 
 ---
-## The live demo can be found [here](https://edwardmn.netlify.app/demo)
+## The live demo can be found [here](https://briq-ke.netlify.app)
 
 
 ## 🗂️ Regulatory Documents
