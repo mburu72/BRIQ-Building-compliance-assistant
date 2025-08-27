@@ -1,6 +1,6 @@
 import { getSessionId } from "../utils/sessionId";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://briq.duckdns.org";
 
 export async function askQuestion(question) {
   const sessionId = getSessionId();
