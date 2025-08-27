@@ -23,7 +23,10 @@ export default function MinimalChat() {
       })
       .catch((err) => console.error("⚠️ history fetch failed:", err));
   }, []);
+  const cleanMarkdownText = (text) => {
 
+    return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1');
+  };
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
 
@@ -168,7 +171,7 @@ export default function MinimalChat() {
                     ),
                   }}
                 >
-                  {msg.data.answer}
+                 {cleanMarkdownText(msg.data.answer)}
                 </ReactMarkdown>
               ) : (
                 <p className="whitespace-pre-wrap">{msg.text}</p>
